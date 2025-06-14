@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>House Price Predictor</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .form-container {
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        select, input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            font-size: 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .result {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #e8f4fc;
+            border-radius: 8px;
+            text-align: center;
+            display: {% if prediction %}block{% else %}none{% endif %};
+        }
+        .prediction-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-top: 10px;
+        }
+        .error {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>House Price Predictor</h1>
+    
+    <div class="form-container">
+        <form method="POST" action="/">
+            <div class="form-group">
+                <label for="location">Location:</label>
+                <select id="location" name="location" required>
+                    {% for location in locations %}
+                        <option value="{{ location }}">{{ location }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="size">Size (sq ft):</label>
+                <input type="number" id="size" name="size" required min="100">
+            </div>
+            
+            <div class="form-group">
+                <label for="green_area">Green Area:</label>
+                <select id="green_area" name="green_area" required>
+                    {% for area in green_areas %}
+                        <option value="{{ area }}">{{ area }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="nearby_amenities">Nearby Amenities:</label>
+                <select id="nearby_amenities" name="nearby_amenities" required>
+                    {% for amenity in amenities %}
+                        <option value="{{ amenity }}">{{ amenity }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="crime_rate">Crime Rate:</label>
+                <select id="crime_rate" name="crime_rate" required>
+                    {% for rate in crime_rates %}
+                        <option value="{{ rate }}">{{ rate }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <button type="submit">Predict Price</button>
+        </form>
+    </div>
+    
+    {% if prediction %}
+    <div class="result" id="result">
+        {% if 'Error' in prediction %}
+            <p class="error">{{ prediction }}</p>
+        {% else %}
+            <h3>Predicted House Price:</h3>
+            <p class="prediction-value">{{ prediction }}</p>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    <script>
+        // Ensure result div is shown when there's a prediction
+        document.addEventListener('DOMContentLoaded', function() {
+            {% if prediction %}
+                document.getElementById('result').style.display = 'block';
+            {% endif %}
+        });
+    </script>
+</body>
+</html>
